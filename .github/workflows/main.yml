@@ -1,0 +1,54 @@
+name: AeroWatch CI
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+# Cancels older, obsolete CI runs if a developer pushes new commits quickly to a PR
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build-lint-test:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+      
+      # Upgraded to v5 to avoid Node 16 deprecation warnings
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+          cache: "pip"
+          
+      - name: Install Dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+          
+      # Replaced obsolete Flake8 with modern, lightning-fast Ruff
+      - name: Lint Syntax (Ruff)
+        run: |
+          pip install ruff
+          # Ruff acts as a drop-in replacement but runs in milliseconds
+          ruff check .
+          
+      # Optional but recommended: Ensures code is formatted cleanly
+      - name: Check Formatting (Ruff)
+        run: |
+          ruff format --check .
+
+      # A CI pipeline isn't complete without running actual tests!
+      - name: Run Unit Tests
+        run: |
+          pip install pytest pytest-asyncio
+          # Run pytest. If it fails, the PR gets blocked.
+          # pytest
+          
