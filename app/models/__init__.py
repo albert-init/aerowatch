@@ -11,7 +11,7 @@ from app.models.ticket import WatchTicket, PriceLog
 from app.models.ticket import TicketStatus, PriorityLevel
 
 # Explicitly declare public exports.
-# WARNING: To avoid circular imports, do not import from `app.models` 
+# WARNING: To avoid circular imports, do not import from `app.models`
 # inside your application logic. Import directly from the module files instead.
 __all__ = [
     "Base",

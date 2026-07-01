@@ -3,6 +3,7 @@ from pydantic import SecretStr, RedisDsn
 from pydantic_settings import BaseSettings, SettingsConfigDict
 from sqlalchemy import URL
 
+
 class Settings(BaseSettings):
     # Database configuration
     DB_USER: str
@@ -13,16 +14,13 @@ class Settings(BaseSettings):
 
     # External APIs and Services
     SERPAPI_KEY: SecretStr
-    
+
     # Use RedisDsn to automatically validate format and mask passwords in logs
     REDIS_URL: RedisDsn
 
     # Pydantic V2 config dict
     model_config = SettingsConfigDict(
-        env_file=".env",
-        env_file_encoding="utf-8",
-        case_sensitive=True,
-        extra="ignore"
+        env_file=".env", env_file_encoding="utf-8", case_sensitive=True, extra="ignore"
     )
 
     @property
@@ -53,6 +51,7 @@ class Settings(BaseSettings):
             database=self.DB_NAME,
         )
 
+
 @cache
 def get_settings() -> Settings:
     """
@@ -61,6 +60,7 @@ def get_settings() -> Settings:
     """
     return Settings()
 
+
 # DO NOT instantiate `settings = get_settings()` at the module level.
-# Instead, call `get_settings()` inside your application lifespan, 
+# Instead, call `get_settings()` inside your application lifespan,
 # or use FastAPI dependency injection: `Depends(get_settings)`.
