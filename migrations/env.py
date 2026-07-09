@@ -22,13 +22,13 @@ def run_migrations_offline() -> None:
     """Run migrations in 'offline' mode."""
     # Settings are now safely isolated to run-time execution
     settings = get_settings()
-    
+
     context.configure(
         url=settings.SYNC_DATABASE_URL.render_as_string(hide_password=False),
         target_metadata=target_metadata,
         literal_binds=True,
         dialect_opts={"paramstyle": "named"},
-        compare_type=True,            # Detects column type/length changes
+        compare_type=True,  # Detects column type/length changes
         compare_server_default=True,  # Detects changes to server_default=func.now()
     )
 
@@ -40,7 +40,10 @@ def run_migrations_online() -> None:
     """Run migrations in 'online' mode."""
     # Settings are safely isolated here as well
     settings = get_settings()
-    config.set_main_option("sqlalchemy.url", settings.SYNC_DATABASE_URL.render_as_string(hide_password=False))
+    config.set_main_option(
+        "sqlalchemy.url",
+        settings.SYNC_DATABASE_URL.render_as_string(hide_password=False),
+    )
 
     connectable = engine_from_config(
         config.get_section(config.config_ini_section, {}),
@@ -50,9 +53,9 @@ def run_migrations_online() -> None:
 
     with connectable.connect() as connection:
         context.configure(
-            connection=connection, 
+            connection=connection,
             target_metadata=target_metadata,
-            compare_type=True,            # Detects column type/length changes
+            compare_type=True,  # Detects column type/length changes
             compare_server_default=True,  # Detects changes to server_default=func.now()
         )
 
