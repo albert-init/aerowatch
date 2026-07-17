@@ -32,5 +32,7 @@ class User(Base):
 
     # Cleaned up typing to use standard lowercase 'list'
     user_watch_tickets: Mapped[list["WatchTicket"]] = relationship(
-        back_populates="ticket_owner", cascade="all, delete-orphan"
+        back_populates="ticket_owner",
+        cascade="all, delete-orphan",
+        passive_deletes=True,
     )

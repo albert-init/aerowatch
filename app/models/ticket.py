@@ -2,6 +2,8 @@ import enum
 import uuid
 from datetime import date, datetime
 from decimal import Decimal
+
+import sqlalchemy as sa
 from sqlalchemy import (
     String,
     Numeric,
@@ -80,9 +82,17 @@ class WatchTicket(Base):
 class PriceLog(Base):
     __tablename__ = "price_logs"
 
+    __table_args__ = (
+        sa.Index(
+            "ix_price_logs_ticket_id_checked_at",
+            "ticket_id",
+            sa.text("checked_at DESC"),
+        ),
+    )
+
     id: Mapped[uuid.UUID] = mapped_column(Uuid, primary_key=True, default=uuid.uuid4)
     ticket_id: Mapped[uuid.UUID] = mapped_column(
-        ForeignKey("watch_tickets.id", ondelete="CASCADE"), index=True, nullable=False
+        ForeignKey("watch_tickets.id", ondelete="CASCADE"), nullable=False
     )
 
     price_found: Mapped[Decimal] = mapped_column(Numeric(10, 2), nullable=False)
